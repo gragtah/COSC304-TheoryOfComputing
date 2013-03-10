@@ -1,0 +1,160 @@
+
+--part1
+
+{-
+
+Hugs> 2
+2
+Hugs> 2.3
+2.3
+Hugs> (2,3)
+(2,3)
+Hugs> [2,3,4]
+[2,3,4]
+
+-}
+
+
+
+
+--part2
+
+
+{-
+
+Hugs> :type 2
+2 :: Num a => a
+Hugs> :type 2.3
+2.3 :: Fractional a => a
+Hugs> :type (2,3)
+(2,3) :: (Num a, Num b) => (b,a)
+Hugs> :type [2,3,4]
+[2,3,4] :: Num a => [a]
+
+-}
+
+
+
+
+--part3
+
+triple x = 3*x
+
+{-
+
+Main> triple 3
+9
+Main> :type triple
+triple :: Num a => a -> a
+
+-}
+
+
+
+
+--part4
+
+add1 x y = x+y
+add2 (x,y) = x+y
+
+{-
+
+Main> add1 2 3
+5
+Main> :type add1
+add1 :: Num a => a -> a -> a
+Main> add2 (2,3)
+5
+Main> :type add2
+add2 :: Num a => (a,a) -> a
+
+-}
+
+
+
+
+--part5
+
+fact 0 = 1
+fact x = x*fact(x-1)
+
+{-
+
+Main> :type fact
+fact :: Num a => a -> a
+Main> fact 6
+720
+
+-}
+
+
+
+
+
+--part6
+
+boolvar1 = 3==4
+
+{-
+Main> boolvar1
+False
+-}
+
+
+
+
+--part7
+
+first (x,y) = x
+second (x,y) = y
+
+{-
+
+Main> :type first
+first :: (a,b) -> a
+Main> :type second
+second :: (a,b) -> b
+
+-}
+
+
+
+
+
+
+--part8
+
+{-
+
+Yes! It is completely polymorphic, no restrictions on input datatypes.
+Here, the function 'second' returns only the second value of the 
+ordered pair by definition. And that value, here, is add2 (4,3) which returns 7
+
+Main> second(4, add2(4,3))
+7
+
+-}
+
+
+
+
+--part9
+
+listlength [] = 0
+listlength (x:list) = 1 + (listlength list)
+
+{-
+
+Main> listlength [[3,5],[2],[4,7]]
+3
+Main> listlength [3,5]
+2
+Main> :type listlength
+listlength :: Num a => [b] -> a
+
+-}
+
+
+
+
+
