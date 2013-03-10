@@ -1,0 +1,188 @@
+--part 0
+
+data Nat = Z|S Nat deriving Show
+
+
+nattoInt Z = 0
+nattoInt (S x) = 1 + nattoInt x
+
+buildNat 0 = Z
+buildNat y = S(buildNat (y-1))
+
+
+add x Z = x
+add x (S y) = S(add x y)
+
+monus x Z = x
+monus z y = z
+monus (S x) (S y) = monus x y
+
+mult x Z = Z
+mult x (S y) = add x (mult x y)
+
+
+
+
+--part 1
+
+stringvar = "abc"
+{-
+Main> :type stringvar
+stringvar :: [Char]
+THIS tells us that strings in Haskell are stored as arrays/lists of characters.
+-}
+
+
+
+
+--part 2
+
+hd (x:list) = x
+
+tl [] = []
+tl (x:list) = list
+
+{-
+
+Main> hd [1,2,3]
+1
+Main> tl [1,2,3]
+[2,3]
+Main> hd []
+
+Program error: pattern match failure: hd []
+Main> tl []
+[]
+Main> hd stringvar
+'a'
+Main> tl stringvar
+"bc"
+
+-}
+
+
+
+--part 3
+
+mult1 (x,y) = x*y
+mult2 x y = x*y
+
+{-
+Main> :type mult1
+mult1 :: Num a => (a,a) -> a
+Main> :type mult2
+mult2 :: Num a => a -> a -> a
+-}
+
+
+
+--part 4
+
+curry2  f a b = f(a,b)
+uncurry2 f(a,b) = f a b
+
+add1 (x,y) = x + y
+add2 x y = x + y
+
+{-
+Main> curry2 mult1 2 3
+6
+Main> uncurry2 mult2 (2,3)
+6  
+Main> curry2 add1 2 3
+5
+Main> uncurry2 add2 (2,3)
+5
+
+-}
+
+
+
+
+
+--part 5
+
+ordstring :: String -> Int
+ordstring [] = 0
+ordstring (x:list) = (fromEnum x) + ordstring (list)
+
+{-
+Main> ordstring "a"
+97
+Main> ordstring "b"
+98
+Main> ordstring "c"
+99
+-}
+
+
+
+
+--part 6
+
+minlist :: Ord a => [a] -> a
+minlist (x:[]) = x
+minlist (x:list) = if (x < minlist(list)) then x
+					else minlist(list)
+					
+sortlist :: Ord a => [a] -> [a]
+sortlist [] =  []
+sortlist (x:xs) =  sortlist [y | y <- xs, y<x ] ++ [x] ++ sortlist [y | y <- xs, y>=x]
+
+inlist :: Eq a => a -> [a] -> Bool
+inlist a [] = False
+inlist a (x:list) = if (a==x) then True
+					else (inlist a list)
+										
+replist :: Eq a => [a] -> [a]
+replist [] = []
+replist (x:list) = if (inlist x list == True) then replist list
+					else x:(replist list)
+
+
+fixlist :: Ord a => [a] -> [a]
+fixlist list = sortlist (replist list)
+
+
+union :: Ord a => ([a],[a]) -> [a]
+union ([],x) = x
+union ((x:list1),list2) = if (inlist x list2) then union (list1,list2)
+						else union (list1,(x:list2))
+
+addtoSet :: Ord a => a -> [a] ->[a]
+addtoSet x [] = x:[]
+addtoSet x list = if (inlist x list) then list
+					else x:list
+
+inter :: Ord a => ([a],[a]) -> [a]
+inter ([],x) = []
+inter ((x:list1),list2) = if (inlist x list2) then x:(inter(list1, list2))
+							else inter (list1, list2)
+
+set1 = [1,2,3]
+set2 = [3,4,5,6]
+
+{-testing
+Main> minlist set1
+1
+Main> minlist set2
+3
+Main> sortlist set2
+[3,4,5,6]
+Main> inlist 3 set2
+True
+Main> inlist 4 set1
+False
+Main> union (list1, list2)
+ERROR - Undefined variable "list2"
+Main> union (set1, set2)
+[2,1,3,4,5,6]
+Main> fixlist (union (set1, set2))
+[1,2,3,4,5,6]
+Main> inter (set1, set2)
+[3]
+Main> addtoSet 5 set2
+[3,4,5,6]
+Main> replist [1,1,2,3]
+[1,2,3]
+-}

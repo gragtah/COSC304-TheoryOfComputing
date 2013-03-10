@@ -1,0 +1,141 @@
+
+--part1
+
+test1 x = 2*x
+test2 x = x+3
+comp(f,g) x = f (g x)
+
+test3 x = test2(test1 x)
+test4 x = test1(test2 x)
+
+{-
+Main> test3 2
+7
+Main> test4 2
+10
+Main> comp (test2, test1) 2
+7
+Main> comp (test1, test2) 2
+10
+-}
+
+
+
+
+
+--part2
+
+test3A = test1.test2
+test4A = test2.test1
+
+{-
+Main> test3A 2
+10
+Main> test4A 2
+7
+..So, f.g  = f(g), that is g is composed first, then the 
+resulting value is used as input for f
+-}
+
+
+
+
+
+--part3
+
+fsmspec1 'a' 0 = 1
+fsmspec1 'a' 1 = 1
+fsmspec1 'a' 2 = 0
+fsmspec1 'b' 0 = 0
+fsmspec1 'b' 1 = 2
+fsmspec1 'b' 2 = 1
+
+{-
+Main> fsmspec1 'a' 0
+1
+Main> fsmspec1 'b' 1
+2
+-}
+
+
+
+
+
+--part4
+
+fsm1 [] s = s
+fsm1 (x:list) s = fsm1 list (fsmspec1 x s)
+
+{-test values
+Main> fsm1 "ab" 0
+2
+Main> fsm1 "ba" 0
+1
+Main> fsm1 "abbab" 0
+2
+Main> fsm1 "bbabb" 0
+1
+Main> fsm1 "ab" 1
+2
+Main> fsm1 "ba" 1
+0
+Main> fsm1 "abbab" 1
+2
+Main> fsm1 "bbabb" 1
+1
+Main> fsm1 "ab" 2
+0
+Main> fsm1 "ba" 2
+1
+Main> fsm1 "abbab" 2
+2
+Main> fsm1 "bbabb" 2
+0
+-}
+
+
+
+
+
+--part5
+
+mm1 list = fsm1 list 0
+
+{-
+Main> mm1 "ab"
+2
+Main> mm1 "ba"
+1
+Main> mm1 "abbab"
+2
+Main> mm1 "bbabb"
+1
+-}
+
+
+
+
+
+-- part6
+
+fsmspec2 'a' 0 = 1
+fsmspec2 'a' 1 = 2
+fsmspec2 'a' 2 = 3
+fsmspec2 'a' 3 = 0
+fsmspec2 'b' 0 = 0
+fsmspec2 'b' 1 = 1
+fsmspec2 'b' 2 = 2
+fsmspec2 'b' 3 = 3
+--assuming 0 as initial and final state both.
+
+fsm2 [] s = s
+fsm2 (x:list) s = fsm2 list (fsmspec2 x s)
+
+mm2 list = fsm2 list 0
+
+{-testing
+Main> mm2 "abbababbaba"
+1
+Main> mm2 "abbababbababba"
+2
+-}

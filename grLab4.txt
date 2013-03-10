@@ -1,0 +1,84 @@
+--part1
+
+monext f bin e [] = bin (e,e)
+monext f bin e (x:list) = bin ((f x), monext f bin e list)
+
+add (x,y) = x + y
+double x = 2*x
+
+
+
+
+--part2
+
+comp (f,g) = g.f
+
+fsmspec1 'a' 0 = 1
+fsmspec1 'a' 1 = 1
+fsmspec1 'a' 2 = 0
+fsmspec1 'b' 0 = 0
+fsmspec1 'b' 1 = 2
+fsmspec1 'b' 2 = 1
+
+ide x = x
+
+fsm1 list s = monext fsmspec1 comp ide list s
+
+
+
+
+--part3
+
+fsm fsmspec = monext fsmspec comp ide 
+
+fsmspec2 'a' 0 = 1
+fsmspec2 'a' 1 = 2
+fsmspec2 'a' 2 = 3
+fsmspec2 'a' 3 = 0
+fsmspec2 'b' 0 = 0
+fsmspec2 'b' 1 = 1
+fsmspec2 'b' 2 = 2
+fsmspec2 'b' 3 = 3
+
+fsm2 = fsm fsmspec2
+
+
+
+
+-- part4
+
+mmspec1 = (fsmspec1, [1])
+
+
+
+
+--part5
+
+inlist x [] = False
+inlist x (y:l) = if (x==y) then True
+				else inlist x l
+				
+mm (fsmspec, finallist) str = inlist (fsm fsmspec str 0) finallist
+
+mm1 = mm mmspec1
+
+mmspec2 = (fsmspec2, [0,2])
+mm2 = mm mmspec2
+
+
+
+
+--part6
+
+fsmspec3 'a' 0 = 1
+fsmspec3 'a' 1 = 2
+fsmspec3 'a' 2 = 0
+fsmspec3 'b' 0 = 0
+fsmspec3 'b' 1 = 1
+fsmspec3 'b' 2 = 2
+
+mmspec3 = (fsmspec3, [0])
+mm3 = mm mmspec3
+
+
+

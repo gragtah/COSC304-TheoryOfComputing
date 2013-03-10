@@ -1,0 +1,99 @@
+{- COSC 304
+	Lab 6 
+	Gaurav Ragtah
+-}
+
+
+--PART1
+
+monext f bin e [] = bin (e,e)
+monext f bin e (x:list) = bin ((f x), monext f bin e list)
+
+comp (f,g) = g.f
+
+inlist x [] = False
+inlist x (y:l) = if (x==y) then True
+				else inlist x l
+
+
+				
+--PART2
+
+spec1 'a' (0, stack) = (0, 'a':stack)
+spec1 'b' (0, stack) = (0, 'b':stack)
+spec1 'c' (0, stack) = (1, stack)
+spec1 'a' (1, 'a':stack) = (1, stack)
+spec1 'b' (1, 'b':stack) = (1, stack)
+
+
+
+--PART3
+
+final1 = [1]
+
+pdaspec1 = (spec1, final1)
+
+
+
+--PART4
+
+ide x = x
+
+pdaCreate pdaspec = ((monext (fst pdaspec) comp ide), (snd pdaspec))
+
+
+
+
+--PART5
+
+pda1 = pdaCreate pdaspec1
+
+pdacomp pda s =  fst pda s (0, "")
+
+
+
+
+
+--PART6
+
+pdatest pda s = inlist (fst (pdacomp pda s)) (snd pda) && (snd (pdacomp pda s) == "")
+
+
+{- when we try the string "abbacbbab" this is what happens:
+
+Main> pdatest pda1 "abbacbbab"
+
+Program error: pattern match failure: spec1 'b' (1,"abba")
+
+This happens because after 'c' has been processed, the only possible way to
+progress further is if an 'a' is encountered. Since a 'b' is present, we get the 
+aforementioned error. We have no pda specficiation defined in pda1 for input 'b'
+when state is 1 and stack top is 'a'.
+
+-}
+
+
+
+--PART7
+
+
+spec2 'a' (0, "") = (1, 'a':'c':"")  -- modification of original instruction to deal with 'e' issue 
+spec2 'a' (2, "") = (1, 'a':'c':"")  --added instruction to revert to state 1 from 2 if more input encountered
+spec2 'b' (0, "") = (1, 'b':'c':"")  -- modification of original instruction to deal with 'e' issue 
+spec2 'b' (2, "") = (1, 'b':'c':"") --added instruction to revert to state 1 from 2 if more input encountered
+
+spec2 'a' (1, 'a':stack) = (1, 'a':'a':stack)
+spec2 'a' (1, 'b':'c':"") = (2, "")
+spec2 'a' (1, 'b':stack) = (1, stack)  --order of this and previous instruction matters. it first checks for 'c', otherwise carries out normal operation
+
+spec2 'b' (1, 'b':stack) = (1, 'b':'b':stack)
+spec2 'b' (1, 'a':'c':"") = (2, "")
+spec2 'b' (1, 'a':stack) = (1, stack)
+
+
+final2 = [2]
+
+pdaspec2 = (spec2, final2)
+
+pda2 = pdaCreate pdaspec2
+
